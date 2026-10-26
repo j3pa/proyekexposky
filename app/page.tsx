@@ -17,6 +17,7 @@ import { MaterialDetailModal } from './components/MaterialDetailModal';
 import { UploadMaterialModal } from './components/UploadMaterialModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LecturerDashboard } from './components/LecturerDashboard';
+import { downloadRealMaterialPdf } from './utils/generatePdf';
 import { 
   IconSearch, 
   IconFilter, 
@@ -101,9 +102,8 @@ export default function Home() {
 
   // Purchase success
   const handlePurchaseSuccess = (mat: Material) => {
-    setPurchasedIds((prev) => [...prev, mat.id]);
-    setCheckoutMaterial(null);
-    showToast(`Berhasil membeli ${mat.title}! Materi siap diunduh.`);
+    setPurchasedIds((prev) => Array.from(new Set([...prev, mat.id])));
+    showToast(`Berhasil membeli ${mat.title}! Berkas PDF siap diunduh.`);
 
     // If author is the current dosen, credit the author
     if (mat.authorRole === 'dosen') {
@@ -115,9 +115,10 @@ export default function Home() {
     }
   };
 
-  // Download simulation
+  // Real PDF download handler
   const handleDownloadClick = (mat: Material) => {
-    showToast(`Mengunduh berkas: ${mat.title} (${mat.fileSize})...`);
+    downloadRealMaterialPdf(mat, currentUser);
+    showToast(`Mengunduh berkas PDF resmi: ${mat.title}...`);
     setMaterials((prev) =>
       prev.map((m) => (m.id === mat.id ? { ...m, downloadsCount: m.downloadsCount + 1 } : m))
     );
@@ -831,6 +832,7 @@ export default function Home() {
           currentUser={currentUser}
           onClose={() => setCheckoutMaterial(null)}
           onSuccess={handlePurchaseSuccess}
+          onDownloadRealPdf={handleDownloadClick}
         />
 
         {/* Campus Selector Quick Dialog */}

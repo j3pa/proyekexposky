@@ -9,6 +9,7 @@ export const UNIVERSITIES = [
   'Universitas Airlangga (UNAIR)',
   'Universitas Diponegoro (UNDIP)',
   'Universitas Brawijaya (UB)',
+  'Universitas Pembangunan Nasional Veteran Yogyakarta (UPN Veteran Yogyakarta)',
 ];
 
 export const CATEGORIES = [
@@ -274,6 +275,37 @@ export const INITIAL_MATERIALS: Material[] = [
     previewPages: [
       'MODUL 1: Desain Subnetting CIDR & VLSM Praktis\n• Pembagian Blok IP /24 menjadi beberapa Subnet Departmental\n• Perhitungan Network ID, Usable Host, Broadcast ID',
       'MODUL 2: Konfigurasi VLAN & Inter-VLAN Routing (Router-on-a-stick)'
+    ]
+  },
+  {
+    id: 'mat_7',
+    title: 'Modul Praktikum & Diktat Lengkap: Rekayasa Perangkat Lunak & Sistem Basis Data',
+    description: 'Modul ajar kurikulum resmi UPN Veteran Yogyakarta. Mencakup perancangan ERD, Normalisasi 1NF-3NF, Query SQL Kompleks, Desain Arsitektur MVC, dan Studi Kasus Proyek Skala Menengah.',
+    category: 'Modul Praktikum',
+    campus: 'Universitas Pembangunan Nasional Veteran Yogyakarta (UPN Veteran Yogyakarta)',
+    faculty: 'Fakultas Teknik Industri',
+    studyProgram: 'Teknik Informatika',
+    courseName: 'Rekayasa Perangkat Lunak',
+    semester: 4,
+    authorId: 'usr_dosen_5',
+    authorName: 'Ir. Hendra Saputra, M.T.',
+    authorRole: 'dosen',
+    authorTitle: 'Dosen FTI UPN Veteran Yogyakarta • NIDN Terverifikasi',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+    isVerified: true,
+    isOfficialDosen: true,
+    price: 20000,
+    rating: 4.96,
+    reviewsCount: 88,
+    difficulty: 'Menengah',
+    pagesCount: 76,
+    downloadsCount: 840,
+    tags: ['UPN Veteran', 'Dosen Resmi', 'Basis Data', 'RPL'],
+    createdAt: '1 hari lalu',
+    fileSize: '16.5 MB (PDF)',
+    previewPages: [
+      'BAB 1: Pengantar Rekayasa Kebutuhan Perangkat Lunak\n• SDLC: Waterfall vs Agile Scrum Model\n• Identifikasi Functional & Non-Functional Requirements\n• Use Case Diagram & Activity Modeling Terstruktur',
+      'BAB 2: Pemodelan Basis Data Relasional\n• Entity Relationship Diagram (ERD)\n• Normalisasi Tabel Relasional (1NF hingga BCNF)\n• Optimasi Indeks dan Stored Procedure pada MySQL'
     ]
   }
 ];
