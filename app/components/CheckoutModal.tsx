@@ -275,20 +275,29 @@ export function CheckoutModal({
               </button>
             </div>
 
-            {/* QRIS preview if selected */}
+            {/* QRIS preview with real QRIS image */}
             {paymentMethod === 'qris' && (
-              <div className="p-3 bg-[#F4FBF7] rounded-2xl border border-[#D5E6DC] text-center space-y-1.5 animate-fadeIn">
-                <span className="text-[10px] font-bold text-[#064E3B] block">Kode QRIS Pembayaran:</span>
-                <div className="w-32 h-32 bg-white p-2 border-2 border-[#064E3B] rounded-xl mx-auto flex items-center justify-center shadow-xs">
-                  <div className="grid grid-cols-5 gap-1.5 w-full h-full p-1 bg-slate-900 rounded">
-                    {Array.from({ length: 25 }).map((_, i) => (
-                      <div key={i} className={`rounded-xs ${i % 2 === 0 ? 'bg-white' : 'bg-transparent'}`}></div>
-                    ))}
-                  </div>
+              <div className="p-3 bg-white rounded-2xl border-2 border-[#059669] text-center space-y-2 animate-fadeIn shadow-xs">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[11px] font-extrabold text-[#064E3B]">QRIS Standar Pembayaran Nasional</span>
+                  <span className="text-[10px] font-bold text-[#16A34A] bg-[#D1FAE5] px-2 py-0.5 rounded-full">
+                    NMID: ID1025421584513
+                  </span>
                 </div>
-                <span className="text-[10px] text-[#5B6B62] block">
-                  Scan dengan aplikasi m-Banking atau E-Wallet apa saja
-                </span>
+                
+                <div className="w-full max-w-[240px] mx-auto rounded-xl overflow-hidden border border-[#D5E6DC] shadow-sm bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/qris.jpg"
+                    alt="QRIS Pembayaran Nasional"
+                    className="w-full h-auto object-contain block"
+                  />
+                </div>
+
+                <div className="text-[10px] text-[#5B6B62] leading-tight space-y-0.5">
+                  <p className="font-bold text-[#14231B]">SEKAIZONE, MAKANAN & MINUMAN (A01)</p>
+                  <p>Buka aplikasi m-Banking (BCA, Mandiri, BRI, BNI) atau E-Wallet (GoPay, OVO, DANA, ShopeePay) lalu scan kode di atas.</p>
+                </div>
               </div>
             )}
 
