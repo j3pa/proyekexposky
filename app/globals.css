@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #059669;
+  --primary-dark: #064E3B;
+  --primary-light: #D1FAE5;
+  --bg: #F4FBF7;
+  --surface: #FFFFFF;
+  --border: #D5E6DC;
+  --accent: #F59E0B;
+  --teal: #0D9488;
+  --success: #16A34A;
+  --warning: #D97706;
+  --error: #DC2626;
+  --info: #0284C7;
+  --text: #14231B;
+  --text-muted: #5B6B62;
+}
+
+html, body {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #064E3B; /* Hijau Hutan dark framing for desktop */
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hide scrollbar for mobile feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
