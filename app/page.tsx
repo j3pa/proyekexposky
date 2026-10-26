@@ -1,14 +1,15 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Role, Material, UserProfile, Review, DifficultyLevel, MaterialCategory } from './types';
+import { Role, Material, UserProfile, Review, DifficultyLevel, MaterialCategory, SubscriptionTier } from './types';
 import { 
   UNIVERSITIES, 
   CATEGORIES, 
   INITIAL_DOSEN_USER, 
   INITIAL_MAHASISWA_USER, 
   INITIAL_MATERIALS, 
-  MOCK_REVIEWS 
+  MOCK_REVIEWS,
+  SUBSCRIPTION_PACKAGES
 } from './data/mockData';
 import { Header } from './components/Header';
 import { BottomNav, TabKey } from './components/BottomNav';
@@ -17,6 +18,7 @@ import { MaterialDetailModal } from './components/MaterialDetailModal';
 import { UploadMaterialModal } from './components/UploadMaterialModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LecturerDashboard } from './components/LecturerDashboard';
+import { SubscriptionModal } from './components/SubscriptionModal';
 import { downloadRealMaterialPdf } from './utils/generatePdf';
 import { 
   IconSearch, 
@@ -31,7 +33,12 @@ import {
   IconDownload,
   IconBookmark,
   IconWallet,
-  IconLockOpen
+  IconLockOpen,
+  IconCrown,
+  IconZap,
+  IconSparkles,
+  IconBookOpen,
+  IconLightBulb
 } from './components/Icons';
 
 export default function Home() {
@@ -64,7 +71,29 @@ export default function Home() {
   const [checkoutMaterial, setCheckoutMaterial] = useState<Material | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isCampusModalOpen, setIsCampusModalOpen] = useState<boolean>(false);
+  const [isSubscriptionOpen, setIsSubscriptionOpen] = useState<boolean>(false);
+  const [subscriptionPreselectedTier, setSubscriptionPreselectedTier] = useState<SubscriptionTier>('platinum');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleOpenSubscriptionModal = (tier: SubscriptionTier = 'platinum') => {
+    setSubscriptionPreselectedTier(tier);
+    setIsSubscriptionOpen(true);
+  };
+
+  const handleSelectSubscriptionPlan = (tier: SubscriptionTier) => {
+    setMahasiswaUser((prev) => ({
+      ...prev,
+      subscriptionTier: tier,
+      subscriptionActiveUntil: tier === 'free' ? undefined : '1 Semester (6 Bulan)',
+    }));
+    if (tier === 'basic') {
+      showToast('⚡ Paket Basic (Rp 49.000) Aktif: Seluruh Bank Soal Latihan & UTS/UAS terbuka!');
+    } else if (tier === 'platinum') {
+      showToast('👑 Platinum Access (Rp 149.000) Aktif: Soal & Seluruh Catatan Materi Teori terbuka!');
+    } else {
+      showToast('Beralih ke Akun Gratis.');
+    }
+  };
 
   // Frame mode toggle for desktop preview
   const [isPhoneFrame, setIsPhoneFrame] = useState<boolean>(true);
@@ -278,6 +307,8 @@ export default function Home() {
           selectedCampus={selectedCampus}
           onCampusClick={() => setIsCampusModalOpen(true)}
           walletBalance={currentUser.walletBalance}
+          subscriptionTier={mahasiswaUser.subscriptionTier}
+          onOpenSubscriptionModal={handleOpenSubscriptionModal}
         />
 
         {/* Screen Content */}
@@ -405,6 +436,89 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Subscription Access Showcase Banner (Basic vs Platinum) */}
+              {currentRole === 'mahasiswa' && (
+                <div className="bg-gradient-to-br from-[#064E3B] via-[#059669] to-[#047857] rounded-3xl p-4 text-white shadow-lg border border-[#D1FAE5]/30 relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="p-1 rounded-lg bg-white/20 text-[#FEF3C7]">
+                        <IconSparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#D1FAE5]">
+                        Paket Akses Ujian Kampus
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-extrabold bg-[#FEF3C7] text-[#92400E] px-2 py-0.5 rounded-full shadow-2xs">
+                      Mulai Rp 49.000
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-extrabold text-white leading-snug">
+                    Pilih Paket Belajar: Basic vs Platinum
+                  </h3>
+                  <p className="text-[11px] text-[#D1FAE5] mt-1 leading-relaxed">
+                    Akses bank soal dan catatan materi terlengkap untuk persiapan UTS, UAS, dan tugas kuliah:
+                  </p>
+
+                  {/* Side-by-side comparison cards */}
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    {/* Basic Card */}
+                    <div 
+                      onClick={() => handleOpenSubscriptionModal('basic')}
+                      className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl border border-white/20 cursor-pointer transition-all active:scale-95 text-left flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-[#D1FAE5]">
+                          <IconZap className="w-3 h-3 text-[#F59E0B]" />
+                          <span>Paket Basic</span>
+                        </div>
+                        <div className="text-sm font-black text-white mt-0.5">Rp 49.000</div>
+                        <p className="text-[10px] text-[#D1FAE5]/90 mt-1 leading-tight">
+                          Hanya mengakses bank soal latihan & kisi-kisi UTS/UAS.
+                        </p>
+                      </div>
+                      <span className="mt-2 text-[10px] font-bold text-[#D1FAE5] underline">
+                        Pilih Basic →
+                      </span>
+                    </div>
+
+                    {/* Platinum Card */}
+                    <div 
+                      onClick={() => handleOpenSubscriptionModal('platinum')}
+                      className="p-3 bg-gradient-to-br from-[#FEF3C7]/20 to-[#F59E0B]/25 hover:brightness-110 rounded-2xl border-2 border-[#F59E0B]/60 cursor-pointer transition-all active:scale-95 text-left flex flex-col justify-between relative shadow-xs"
+                    >
+                      <div>
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-[#FEF3C7]">
+                          <IconCrown className="w-3 h-3 fill-[#F59E0B] text-[#F59E0B]" />
+                          <span>Platinum Access</span>
+                        </div>
+                        <div className="text-sm font-black text-white mt-0.5">Rp 149.000</div>
+                        <p className="text-[10px] text-[#D1FAE5]/90 mt-1 leading-tight">
+                          Akses soal latihan + catatan materi & teori pembahasan lengkap.
+                        </p>
+                      </div>
+                      <span className="mt-2 text-[10px] font-black text-[#FEF3C7] underline">
+                        Paling Lengkap →
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Footer status */}
+                  <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/15 text-[11px]">
+                    <span className="text-[#D1FAE5]">
+                      Status Anda: <strong className="text-white uppercase">{mahasiswaUser.subscriptionTier === 'platinum' ? '👑 Platinum VIP' : mahasiswaUser.subscriptionTier === 'basic' ? '⚡ Basic' : 'Gratis'}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSubscriptionModal('platinum')}
+                      className="px-3 py-1 bg-white text-[#064E3B] font-extrabold text-[11px] rounded-xl hover:bg-[#D1FAE5] transition-all shadow-xs"
+                    >
+                      Bandingkan Benefit →
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Dosen Section Carousel */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -493,6 +607,7 @@ export default function Home() {
                         isPurchased={purchasedIds.includes(material.id)}
                         onSelect={setSelectedMaterial}
                         onToggleBookmark={handleToggleBookmark}
+                        userSubscription={mahasiswaUser.subscriptionTier}
                       />
                     ))}
                   </div>
@@ -613,6 +728,7 @@ export default function Home() {
                     isPurchased={purchasedIds.includes(material.id)}
                     onSelect={setSelectedMaterial}
                     onToggleBookmark={handleToggleBookmark}
+                    userSubscription={mahasiswaUser.subscriptionTier}
                   />
                 ))}
               </div>
@@ -693,6 +809,7 @@ export default function Home() {
                         isPurchased={true}
                         onSelect={setSelectedMaterial}
                         onToggleBookmark={handleToggleBookmark}
+                        userSubscription={mahasiswaUser.subscriptionTier}
                       />
                     ))}
                   </div>
@@ -715,6 +832,7 @@ export default function Home() {
                         isPurchased={purchasedIds.includes(mat.id)}
                         onSelect={setSelectedMaterial}
                         onToggleBookmark={handleToggleBookmark}
+                        userSubscription={mahasiswaUser.subscriptionTier}
                       />
                     ))}
                   </div>
@@ -750,6 +868,114 @@ export default function Home() {
                       <span className="inline-block mt-1 text-[10px] font-bold text-[#064E3B] bg-[#D1FAE5] px-2 py-0.5 rounded border border-[#059669]/30">
                         {mahasiswaUser.nidnOrNim} (Mahasiswa Aktif)
                       </span>
+                    </div>
+                  </div>
+
+                  {/* Student Subscription Plan Status Card */}
+                  <div className={`rounded-3xl p-4 border transition-all ${
+                    mahasiswaUser.subscriptionTier === 'platinum'
+                      ? 'bg-gradient-to-br from-[#FEF3C7]/80 via-white to-[#FEF3C7]/40 border-[#F59E0B] shadow-md ring-2 ring-[#F59E0B]/20'
+                      : mahasiswaUser.subscriptionTier === 'basic'
+                      ? 'bg-gradient-to-br from-[#D1FAE5]/70 via-white to-[#D1FAE5]/30 border-[#059669] shadow-sm'
+                      : 'bg-white border-[#D5E6DC] shadow-xs'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        {mahasiswaUser.subscriptionTier === 'platinum' ? (
+                          <div className="p-1 rounded-lg bg-[#FEF3C7] text-[#B45309]">
+                            <IconCrown className="w-4 h-4 fill-[#F59E0B]" />
+                          </div>
+                        ) : mahasiswaUser.subscriptionTier === 'basic' ? (
+                          <div className="p-1 rounded-lg bg-[#D1FAE5] text-[#064E3B]">
+                            <IconZap className="w-4 h-4 text-[#059669]" />
+                          </div>
+                        ) : (
+                          <div className="p-1 rounded-lg bg-gray-100 text-[#5B6B62]">
+                            <IconSparkles className="w-4 h-4 text-[#F59E0B]" />
+                          </div>
+                        )}
+                        <span className="text-xs font-extrabold text-[#14231B]">
+                          Paket Akses Ujian Anda
+                        </span>
+                      </div>
+
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                        mahasiswaUser.subscriptionTier === 'platinum'
+                          ? 'bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B]/40'
+                          : mahasiswaUser.subscriptionTier === 'basic'
+                          ? 'bg-[#D1FAE5] text-[#064E3B] border border-[#059669]/40'
+                          : 'bg-gray-100 text-[#5B6B62]'
+                      }`}>
+                        {mahasiswaUser.subscriptionTier === 'platinum' ? '👑 Platinum VIP' : mahasiswaUser.subscriptionTier === 'basic' ? '⚡ Basic (49rb)' : 'Gratis'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[#5B6B62] leading-relaxed">
+                      {mahasiswaUser.subscriptionTier === 'platinum' && 'Akses Tanpa Batas ke seluruh Bank Soal Latihan BESERTA Catatan Materi & Teori Dosen resmi.'}
+                      {mahasiswaUser.subscriptionTier === 'basic' && 'Akses Penuh ke seluruh Bank Soal Latihan & UTS/UAS. (Catatan materi teori butuh Platinum Access).'}
+                      {(!mahasiswaUser.subscriptionTier || mahasiswaUser.subscriptionTier === 'free') && 'Saat ini Anda berada di akun Standar (Gratis). Pilih paket Basic atau Platinum untuk membuka materi ujian.'}
+                    </p>
+
+                    {/* Features checklist pill */}
+                    <div className="mt-3 p-2.5 bg-[#F4FBF7] rounded-2xl border border-[#D5E6DC] text-[11px] space-y-1">
+                      <div className="flex items-center justify-between text-[#14231B]">
+                        <span>Akses Bank Soal Latihan & UTS/UAS:</span>
+                        <strong className={mahasiswaUser.subscriptionTier === 'free' ? 'text-[#DC2626]' : 'text-[#16A34A]'}>
+                          {mahasiswaUser.subscriptionTier === 'free' ? 'Terbatas (Sample)' : 'Aktif (Full) ✓'}
+                        </strong>
+                      </div>
+                      <div className="flex items-center justify-between text-[#14231B]">
+                        <span>Catatan Materi & Teori Konsep Soal:</span>
+                        <strong className={mahasiswaUser.subscriptionTier === 'platinum' ? 'text-[#16A34A]' : 'text-[#DC2626]'}>
+                          {mahasiswaUser.subscriptionTier === 'platinum' ? 'Aktif (Full) ✓' : 'Terkunci 🔒'}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* Quick Upgrade/Change button */}
+                    <div className="mt-3 pt-2 border-t border-black/5 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenSubscriptionModal('platinum')}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-[#064E3B] hover:bg-[#059669] text-white font-extrabold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 active:scale-95"
+                      >
+                        <IconCrown className="w-3.5 h-3.5 fill-[#F59E0B]" />
+                        <span>{mahasiswaUser.subscriptionTier === 'free' ? 'Buka Paket Belajar (49rb / 149rb)' : 'Ganti / Upgrade Paket'}</span>
+                      </button>
+                    </div>
+
+                    {/* Tester pill quick switcher */}
+                    <div className="mt-2.5 pt-2 border-t border-dashed border-[#D5E6DC] flex items-center justify-between text-[10px]">
+                      <span className="text-[#5B6B62] font-semibold">Simulasi Akun:</span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSubscriptionPlan('free')}
+                          className={`px-2 py-0.5 rounded font-bold border transition-colors ${
+                            mahasiswaUser.subscriptionTier === 'free' ? 'bg-[#14231B] text-white' : 'bg-white text-[#5B6B62]'
+                          }`}
+                        >
+                          Gratis
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSubscriptionPlan('basic')}
+                          className={`px-2 py-0.5 rounded font-bold border transition-colors ${
+                            mahasiswaUser.subscriptionTier === 'basic' ? 'bg-[#059669] text-white' : 'bg-white text-[#064E3B]'
+                          }`}
+                        >
+                          ⚡ Basic
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSubscriptionPlan('platinum')}
+                          className={`px-2 py-0.5 rounded font-bold border transition-colors ${
+                            mahasiswaUser.subscriptionTier === 'platinum' ? 'bg-[#B45309] text-white' : 'bg-white text-[#92400E]'
+                          }`}
+                        >
+                          👑 Platinum
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -816,6 +1042,8 @@ export default function Home() {
           reviews={selectedMaterial ? (reviewsMap[selectedMaterial.id] || []) : []}
           onAddReview={handleAddReview}
           userRole={currentRole}
+          userSubscription={mahasiswaUser.subscriptionTier}
+          onOpenSubscriptionModal={handleOpenSubscriptionModal}
         />
 
         {/* Upload Material Modal */}
@@ -833,6 +1061,15 @@ export default function Home() {
           onClose={() => setCheckoutMaterial(null)}
           onSuccess={handlePurchaseSuccess}
           onDownloadRealPdf={handleDownloadClick}
+        />
+
+        {/* Subscription Packages Modal */}
+        <SubscriptionModal
+          isOpen={isSubscriptionOpen}
+          onClose={() => setIsSubscriptionOpen(false)}
+          currentUser={currentUser}
+          onSelectPlan={handleSelectSubscriptionPlan}
+          preselectedTier={subscriptionPreselectedTier}
         />
 
         {/* Campus Selector Quick Dialog */}

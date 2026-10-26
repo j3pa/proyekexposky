@@ -9,6 +9,44 @@ export type MaterialCategory =
   | 'Modul Praktikum'
   | 'Panduan Skripsi';
 
+export type SubscriptionTier = 'free' | 'basic' | 'platinum';
+
+export interface PracticeQuestionItem {
+  id: string;
+  number: number;
+  questionText: string;
+  topic: string;
+  difficulty: DifficultyLevel;
+  sampleAnswer: string;
+  keyPoints: string[];
+  // Catatan materi & teori konsep mengenai soal tersebut (Platinum Access Exclusive)
+  theoryNotes: {
+    conceptTitle: string;
+    summaryExplanation: string;
+    formulaOrSnippet?: string;
+    examTips: string;
+    relatedTopics: string[];
+  };
+}
+
+export interface SubscriptionPackage {
+  id: SubscriptionTier;
+  name: string;
+  badge: string;
+  price: number;
+  period: string; // e.g. "Per Semester"
+  tagline: string;
+  description: string;
+  features: {
+    text: string;
+    included: boolean;
+    platinumOnly?: boolean;
+    highlight?: boolean;
+  }[];
+  recommended?: boolean;
+  colorScheme: 'emerald' | 'gold';
+}
+
 export interface Review {
   id: string;
   userName: string;
@@ -47,6 +85,7 @@ export interface Material {
   tags: string[];
   createdAt: string;
   fileSize: string;
+  practiceQuestions?: PracticeQuestionItem[]; // Daftar soal latihan dan catatan materi terkait
 }
 
 export interface UserProfile {
@@ -62,4 +101,7 @@ export interface UserProfile {
   walletBalance: number; // Saldo pendapatan dari jualan materi
   materialsSold: number;
   materialsShared: number;
+  subscriptionTier?: SubscriptionTier; // 'free' | 'basic' | 'platinum'
+  subscriptionActiveUntil?: string;
 }
+

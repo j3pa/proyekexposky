@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Role } from '../types';
-import { IconBell, IconBadgeCheck, IconGraduationCap } from './Icons';
+import { Role, SubscriptionTier } from '../types';
+import { IconBell, IconBadgeCheck, IconGraduationCap, IconCrown, IconZap, IconSparkles } from './Icons';
 
 interface HeaderProps {
   currentRole: Role;
@@ -10,6 +10,8 @@ interface HeaderProps {
   selectedCampus: string;
   onCampusClick: () => void;
   walletBalance: number;
+  subscriptionTier?: SubscriptionTier;
+  onOpenSubscriptionModal?: (tier?: SubscriptionTier) => void;
 }
 
 export function Header({
@@ -18,6 +20,8 @@ export function Header({
   selectedCampus,
   onCampusClick,
   walletBalance,
+  subscriptionTier = 'free',
+  onOpenSubscriptionModal,
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#D5E6DC] shadow-xs">
@@ -105,10 +109,43 @@ export function Header({
           </div>
         ) : (
           <div className="mt-2 text-[11px] text-[#5B6B62] flex items-center justify-between px-0.5">
-            <span>Pasar Materi Belajar Terverifikasi Kampus</span>
-            <span className="text-[#059669] font-bold flex items-center gap-0.5">
-              <IconBadgeCheck className="w-3.5 h-3.5 text-[#16A34A]" /> Sistem Kurasi
-            </span>
+            <button
+              type="button"
+              onClick={() => onOpenSubscriptionModal?.()}
+              className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold transition-all shadow-2xs active:scale-95 ${
+                subscriptionTier === 'platinum'
+                  ? 'bg-gradient-to-r from-[#FEF3C7] to-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/60'
+                  : subscriptionTier === 'basic'
+                  ? 'bg-[#D1FAE5] text-[#064E3B] border border-[#059669]/40'
+                  : 'bg-[#F4FBF7] text-[#059669] border border-[#D5E6DC] hover:bg-[#D1FAE5]'
+              }`}
+            >
+              {subscriptionTier === 'platinum' ? (
+                <>
+                  <IconCrown className="w-3 h-3 fill-[#F59E0B]" />
+                  <span>👑 Platinum Access Aktif (Soal + Catatan)</span>
+                </>
+              ) : subscriptionTier === 'basic' ? (
+                <>
+                  <IconZap className="w-3 h-3 text-[#059669]" />
+                  <span>⚡ Paket Basic Aktif (Akses Soal 49rb)</span>
+                </>
+              ) : (
+                <>
+                  <IconSparkles className="w-3 h-3 text-[#F59E0B]" />
+                  <span>Paket Ujian: Basic (49rb) & Platinum (149rb)</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onOpenSubscriptionModal?.()}
+              className="text-[10px] font-extrabold text-[#059669] hover:underline flex items-center gap-0.5"
+            >
+              <span>{subscriptionTier === 'free' ? 'Buka Paket' : 'Upgrade'}</span>
+              <span>→</span>
+            </button>
           </div>
         )}
       </div>

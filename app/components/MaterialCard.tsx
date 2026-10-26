@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Material } from '../types';
+import { Material, SubscriptionTier } from '../types';
 import { 
   IconStar, 
   IconLock, 
   IconLockOpen, 
   IconBadgeCheck, 
-  IconBookmark
+  IconBookmark,
+  IconCrown,
+  IconZap
 } from './Icons';
 
 interface MaterialCardProps {
@@ -16,6 +18,7 @@ interface MaterialCardProps {
   isPurchased: boolean;
   onSelect: (material: Material) => void;
   onToggleBookmark: (materialId: string, e: React.MouseEvent) => void;
+  userSubscription?: SubscriptionTier;
 }
 
 export function MaterialCard({
@@ -24,6 +27,7 @@ export function MaterialCard({
   isPurchased,
   onSelect,
   onToggleBookmark,
+  userSubscription = 'free',
 }: MaterialCardProps) {
   // Difficulty color badges matching color palette
   const getDifficultyBadge = (level: string) => {
@@ -72,7 +76,7 @@ export function MaterialCard({
           <span className="text-[8px] font-bold text-[#14231B] truncate">
             {material.courseName.split(' ')[0]}
           </span>
-          {isFree || isPurchased ? (
+          {isFree || isPurchased || userSubscription === 'platinum' || (userSubscription === 'basic' && (material.category === 'Latihan Soal & UTS/UAS' || Boolean(material.practiceQuestions?.length))) ? (
             <IconLockOpen className="w-2.5 h-2.5 text-[#16A34A]" />
           ) : (
             <IconLock className="w-2.5 h-2.5 text-[#5B6B62]" />
@@ -170,6 +174,14 @@ export function MaterialCard({
             {isPurchased ? (
               <span className="text-[11px] font-bold text-[#16A34A] bg-[#D1FAE5] px-2 py-0.5 rounded-full border border-[#16A34A]/30">
                 Terbeli ✓
+              </span>
+            ) : userSubscription === 'platinum' ? (
+              <span className="text-[10px] font-black text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#F59E0B]/50 flex items-center gap-0.5">
+                <IconCrown className="w-2.5 h-2.5 fill-[#F59E0B]" /> Platinum
+              </span>
+            ) : userSubscription === 'basic' && (material.category === 'Latihan Soal & UTS/UAS' || Boolean(material.practiceQuestions?.length)) ? (
+              <span className="text-[10px] font-bold text-[#064E3B] bg-[#D1FAE5] px-2 py-0.5 rounded-full border border-[#059669]/40 flex items-center gap-0.5">
+                <IconZap className="w-2.5 h-2.5 text-[#059669]" /> Akses Soal
               </span>
             ) : isFree ? (
               <span className="text-[11px] font-bold text-[#064E3B] bg-[#D1FAE5] px-2 py-0.5 rounded-full border border-[#059669]/40">

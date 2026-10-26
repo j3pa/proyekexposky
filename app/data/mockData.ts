@@ -1,4 +1,4 @@
-import { Material, UserProfile, Review } from '../types';
+import { Material, UserProfile, Review, SubscriptionPackage } from '../types';
 
 export const UNIVERSITIES = [
   'Semua Kampus',
@@ -19,6 +19,46 @@ export const CATEGORIES = [
   'Slide Dosen Resmi',
   'Modul Praktikum',
   'Panduan Skripsi',
+];
+
+export const SUBSCRIPTION_PACKAGES: SubscriptionPackage[] = [
+  {
+    id: 'basic',
+    name: 'Basic Access',
+    badge: 'Akses Soal Latihan',
+    price: 49000,
+    period: 'per semester',
+    tagline: 'Fokus Latihan Mandiri & Bank Soal',
+    description: 'Hanya mengakses bank soal latihan ujian dan kisi-kisi UTS/UAS kampus se-Indonesia tanpa catatan materi teoritis.',
+    colorScheme: 'emerald',
+    features: [
+      { text: 'Akses Penuh Bank Soal Latihan & Kisi-kisi UTS/UAS', included: true },
+      { text: 'Kunci Jawaban & Poin Penting Soal', included: true },
+      { text: 'Unduh Lembar Soal Ujian (PDF)', included: true },
+      { text: 'Catatan Materi & Teori Konsep Mengenai Soal', included: false, platinumOnly: true },
+      { text: 'Slide Dosen Resmi & Modul Teori Lengkap', included: false, platinumOnly: true },
+      { text: 'Trik Cepat Ujian & Pembuktian Rumus', included: false, platinumOnly: true },
+    ],
+  },
+  {
+    id: 'platinum',
+    name: 'Platinum Access',
+    badge: 'Soal + Catatan Materi (Best Value)',
+    price: 149000,
+    period: 'per semester',
+    tagline: 'Soal Ujian + Catatan Materi Pembahasan Lengkap',
+    description: 'Akses terlengkap! Membuka seluruh bank soal latihan DAN catatan materi komprehensif, slide teori dosen, serta ringkasan materi seputar soal tersebut.',
+    recommended: true,
+    colorScheme: 'gold',
+    features: [
+      { text: 'Akses Penuh Bank Soal Latihan & Kisi-kisi UTS/UAS', included: true, highlight: true },
+      { text: 'Catatan Materi Lengkap Mengenai Soal Tersebut', included: true, highlight: true },
+      { text: 'Slide Dosen Resmi & Modul Praktikum Terkurasi', included: true, highlight: true },
+      { text: 'Langkah Pembahasan & Tips Trik Ujian Cepat', included: true, highlight: true },
+      { text: 'Bebas Unduh Seluruh Dokumen & Rangkuman HD (PDF)', included: true },
+      { text: 'Akses Prioritas Update Bank Soal Semester Baru', included: true },
+    ],
+  },
 ];
 
 export const INITIAL_DOSEN_USER: UserProfile = {
@@ -49,6 +89,7 @@ export const INITIAL_MAHASISWA_USER: UserProfile = {
   walletBalance: 125000,
   materialsSold: 12,
   materialsShared: 3,
+  subscriptionTier: 'free',
 };
 
 export const MOCK_REVIEWS: Record<string, Review[]> = {
@@ -119,6 +160,48 @@ export const INITIAL_MATERIALS: Material[] = [
       'BAB 1: Pengantar Struktur Data & Big-O Notation\n• Konsep abstraksi data (ADT)\n• Analisis efisiensi waktu & ruang\n• Best, Average, Worst case complexity',
       'BAB 2: Balanced Trees & Self-Balancing BST\n• Rotasi Left-Right pada AVL Tree\n• Red-Black Tree invariant rules\n• Contoh implementasi kode C++ & Java',
       'BAB 3: Dynamic Programming Strategy\n• Top-down memoization vs Bottom-up tabulation\n• Klasik Knapsack 0/1 Problem\n• Longest Common Subsequence (LCS)'
+    ],
+    practiceQuestions: [
+      {
+        id: 'q_algo_1',
+        number: 1,
+        topic: 'Binary Search Tree & AVL Self-Balancing',
+        difficulty: 'Menengah',
+        questionText: 'Diberikan AVL Tree kosong. Masukkan elemen secara berurutan: [10, 20, 30, 25]. Tentukan jenis rotasi yang terjadi saat node 25 dimasukkan!',
+        sampleAnswer: 'Terjadi pelanggaran balance factor pada node 20 (Left-Right Case), sehingga dilakukan Double Rotation: Rotasi Kiri pada node 20 dilanjutkan Rotasi Kanan pada node 30.',
+        keyPoints: [
+          'Setelah insert 10, 20, 30: terjadi single left rotation pada 10 (Root baru: 20)',
+          'Setelah insert 25: subpohon kanan (node 30) memiliki Left Child 25 (Left-Heavy subchild)',
+          'Rotasi Left-Right (LR) mengembalikan balance factor ke rentang {-1, 0, 1}'
+        ],
+        theoryNotes: {
+          conceptTitle: 'Catatan Teori: Invariant AVL Tree, Balance Factor & 4 Pola Rotasi',
+          summaryExplanation: 'AVL Tree adalah self-balancing Binary Search Tree di mana selisih tinggi antara subpohon kiri dan subpohon kanan (Balance Factor = Height(Left) - Height(Right)) pada setiap node maksimal bernilai -1, 0, atau +1.\n\n4 Kasus Rotasi:\n1. Left-Left (LL) -> Single Right Rotation\n2. Right-Right (RR) -> Single Left Rotation\n3. Left-Right (LR) -> Rotasi Kiri pada anak kiri, lalu Rotasi Kanan pada root\n4. Right-Left (RL) -> Rotasi Kanan pada anak kanan, lalu Rotasi Kiri pada root',
+          formulaOrSnippet: 'Balance Factor (BF) = Height(LeftNode) - Height(RightNode)\nKondisi Seimbang: BF ∈ {-1, 0, 1}\nKompleksitas Pencarian & Penyisipan AVL: O(log N)',
+          examTips: 'Pada lembar jawaban ujian UTS, gambar pohon per langkah dan tuliskan angka Balance Factor di samping setiap node untuk mendapatkan nilai maksimal.',
+          relatedTopics: ['Red-Black Tree', 'B-Tree & B+ Tree', 'Analisis Asimptotik Big-O']
+        }
+      },
+      {
+        id: 'q_algo_2',
+        number: 2,
+        topic: 'Dynamic Programming: 0/1 Knapsack Problem',
+        difficulty: 'Sulit',
+        questionText: 'Terdapat 3 barang dengan bobot w = [2, 3, 4] dan nilai v = [3, 4, 5]. Kapasitas tas W = 5. Tentukan nilai maksimum menggunakan tabel DP!',
+        sampleAnswer: 'Nilai maksimum yang dapat dimasukkan adalah 7 (mengambil barang ke-1 seberat 2 bernilai 3 dan barang ke-2 seberat 3 bernilai 4).',
+        keyPoints: [
+          'Definisikan DP[i][w] = nilai maksimum dengan i barang pertama dan kapasitas w',
+          'Relasi Rekurensi: DP[i][w] = max(DP[i-1][w], DP[i-1][w - w_i] + v_i)',
+          'Barang ke-3 (bobot 4, nilai 5) tidak diambil karena kombinasi barang 1 dan 2 bernilai 7'
+        ],
+        theoryNotes: {
+          conceptTitle: 'Catatan Teori: Optimal Substructure & Overlapping Subproblems pada DP',
+          summaryExplanation: 'Dynamic programming memecahkan persoalan optimasi dengan menyimpan solusi subproblem ke dalam tabel memoization/tabulasi. Pada 0/1 Knapsack, setiap barang hanya boleh diambil 0 atau 1 kali (berbeda dengan Fractional Knapsack yang bisa diselesaikan dengan algoritma Greedy).',
+          formulaOrSnippet: 'Relasi Rekurensi:\nDP[i][w] = DP[i-1][w]                           jika w_i > w\nDP[i][w] = max(DP[i-1][w], DP[i-1][w-w_i] + v_i)  jika w_i <= w\nKompleksitas Waktu: O(N * W) (Pseudo-polynomial)',
+          examTips: 'Selalu inisialisasi baris 0 dan kolom 0 tabel dengan angka 0 sebagai base case sebelum mengisi sel-sel berikutnya.',
+          relatedTopics: ['Longest Common Subsequence (LCS)', 'Greedy Algorithms', 'Subset Sum Problem']
+        }
+      }
     ]
   },
   {
@@ -151,6 +234,71 @@ export const INITIAL_MATERIALS: Material[] = [
       'BAGIAN I: Teknik Pengintegralan Mahir\n• Substitusi Trigonometri\n• Integral Fungsi Rasional via Pecahan Parsial\n• Integral Tak Wajar (Improper Integral)',
       'BAGIAN II: Deret Tak Hingga\n• Uji Konvergensi (Rasio, Integral, Perbandingan)\n• Jari-jari & Interval Konvergensi Deret Kuasa\n• Ekspansi Deret Taylor seputar x = 0',
       'BAGIAN III: Soal Prediksi UAS 2026\n• Model Persoalan Penerapan Fisika dan Geometri'
+    ],
+    practiceQuestions: [
+      {
+        id: 'q_kalkulus_1',
+        number: 1,
+        topic: 'Teknik Pengintegralan Parsial Tentu',
+        difficulty: 'Menengah',
+        questionText: 'Tentukan hasil integral tentu berikut:\n∫ (dari 0 sampai 1) x * e^(2x) dx',
+        sampleAnswer: 'Hasil akhir adalah: (1/4) * (e^2 + 1) ≈ 2.097',
+        keyPoints: [
+          'Gunakan rumus parsial: ∫ u dv = u*v - ∫ v du',
+          'Misalkan u = x sehingga du = dx',
+          'Misalkan dv = e^(2x) dx sehingga v = (1/2) * e^(2x)',
+          'Evaluasi batas [0, 1] dengan teliti pada suku -(1/4)e^(2x)'
+        ],
+        theoryNotes: {
+          conceptTitle: 'Catatan Teori: Kaidah Prioritas LIATE & Metode Tabular (DI Method)',
+          summaryExplanation: 'Untuk pengintegralan parsial f(x) * g(x), pemilihan u didasarkan pada urutan LIATE (Logarithmic, Inverse trig, Algebraic, Trigonometric, Exponential). Karena x adalah Aljabar dan e^(2x) adalah Eksponensial, x mutlak dipilih sebagai u agar turunannya berakhir di nol.\n\nMetode Tabular D-I juga dapat digunakan jika u merupakan suku banyak berderajat n untuk memotong waktu pengerjaan 50%.',
+          formulaOrSnippet: 'Rumus Dasar: ∫ u dv = u*v - ∫ v du\nMetode Tabular D-I:\n  Turunan D (+)       Integral I\n       x       \\ (+)    e^(2x)\n       1       \\ (-)    (1/2)e^(2x)\n       0                (1/4)e^(2x)\n=> Hasil: [ (1/2)x*e^(2x) - (1/4)e^(2x) ] |_0^1 = 1/4(e^2 + 1)',
+          examTips: 'Kesalahan paling sering terjadi pada evaluasi batas bawah 0: suku -(1/4)e^0 bernilai -(1/4), jangan diasumsikan bernilai 0!',
+          relatedTopics: ['Kalkulus Integral II', 'Substitusi Trigonometri', 'Integral Tak Wajar']
+        }
+      },
+      {
+        id: 'q_kalkulus_2',
+        number: 2,
+        topic: 'Uji Konvergensi Deret Tak Hingga (D\'Alembert Ratio Test)',
+        difficulty: 'Sulit',
+        questionText: 'Ujilah apakah deret tak hingga berikut konvergen atau divergen:\n∑ (n=1 sampai ∞) [ (2n)! / ( (n!)^2 * 3^n ) ]',
+        sampleAnswer: 'Deret DIVERGEN berdasarkan Uji Rasio Mutlak (Limit Ratio Test) karena rasio L = 4/3 > 1.',
+        keyPoints: [
+          'Hitung a_(n+1) dan tentukan limit rasio |a_(n+1) / a_n| saat n -> ∞',
+          'Faktorial (2n+2)! disederhanakan menjadi (2n+2)(2n+1)(2n)!',
+          'Suku (n!)^2 saling meniadakan dengan ((n+1)!)^2 menyisakan (n+1)^2',
+          'Limit rasio menghasilkan L = 4/3 > 1 => Deret Divergen'
+        ],
+        theoryNotes: {
+          conceptTitle: 'Catatan Teori: Prinsip Uji Rasio D\'Alembert & Pola Faktorial Ganda',
+          summaryExplanation: 'Uji Rasio D\'Alembert paling ampuh diaplikasikan pada deret yang memuat suku faktorial n! atau bentuk perpangkatan eksponensial k^n.\n- Jika L < 1: Konvergen mutlak\n- Jika L > 1: Divergen\n- Jika L = 1: Uji tidak memberi kesimpulan (harus beralih ke uji lain seperti Uji Raabe atau Uji Integral)',
+          formulaOrSnippet: 'L = lim (n->∞) | a_(n+1) / a_n |\n= lim [ (2n+2)(2n+1) / ((n+1)^2 * 3) ]\n= lim [ (4n^2 + 6n + 2) / (3n^2 + 6n + 3) ] = 4/3 > 1',
+          examTips: 'Jika menjumpai faktorial (2n)!, hati-hati saat n diganti (n+1), hasilnya adalah (2(n+1))! = (2n+2)!, BUKAN (2n+1)! yang sering memicu pengurangan nilai.',
+          relatedTopics: ['Deret Kuasa & Taylor', 'Radius Konvergensi', 'Limit Asimptotik']
+        }
+      },
+      {
+        id: 'q_kalkulus_3',
+        number: 3,
+        topic: 'Integral Lipat Dua Koordinat Polar',
+        difficulty: 'Menengah',
+        questionText: 'Hitunglah nilai volume benda pejal di bawah permukaan paraboloida z = 4 - x^2 - y^2 dan di atas bidang xy!',
+        sampleAnswer: 'Volume benda pejal adalah: 8π satuan volume (≈ 25.132).',
+        keyPoints: [
+          'Perpotongan dengan bidang xy (z=0): x^2 + y^2 = 4 (lingkaran r = 2)',
+          'Konversi ke polar: x^2 + y^2 = r^2, Jacobian dA = r dr dθ',
+          'Batas integral: r dari 0 sampai 2, θ dari 0 sampai 2π',
+          'V = ∫ (0..2π) ∫ (0..2) (4 - r^2) * r dr dθ'
+        ],
+        theoryNotes: {
+          conceptTitle: 'Catatan Teori: Transformasi Koordinat Polar & Faktor Jacobian r dr dθ',
+          summaryExplanation: 'Dalam integral lipat dua, ketika daerah integrasi berupa lingkaran, sektor lingkaran, atau fungsi memuat suku (x^2 + y^2), beralih ke koordinat polar memudahkan kalkulasi secara signifikan.\n\nJangan lupa menyertakan faktor pengali luas Jacobian r dalam elemen differensial dA = r dr dθ.',
+          formulaOrSnippet: 'x = r cos θ, y = r sin θ, x^2 + y^2 = r^2\ndA = r dr dθ\nV = ∫_0^(2π) dθ ∫_0^2 (4r - r^3) dr = 2π * [ 2r^2 - r^4/4 ]_0^2 = 2π * (8 - 4) = 8π',
+          examTips: 'Kerap lupa memasukkan "r" di sebelah dr (Jacobian), sehingga hanya mengintegralkan (4 - r^2) dr. Hal tersebut berakibat fatal pada hasil ujian!',
+          relatedTopics: ['Integral Lipat Tiga Tabung', 'Aplikasi Fisika Massa & Pusat Gravitasi']
+        }
+      }
     ]
   },
   {
